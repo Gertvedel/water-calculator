@@ -1,0 +1,82 @@
+<!-- Water Mixing Calculator Embed Start -->
+<div style="max-width: 360px; margin: 20px auto; padding: 20px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); font-family: system-ui, -apple-system, sans-serif;">
+  <h3 style="margin-top: 0; text-align: center; font-size: 1.15rem; color: #111827;">Water Mixing Calculator (1000 mL)</h3>
+
+  <div style="margin-bottom: 10px;">
+    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 3px; color: #374151;" for="calc_t1">Temperature 1, T₁ (°C):</label>
+    <input type="number" id="calc_t1" step="any" placeholder="e.g. 15" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+  </div>
+
+  <div style="margin-bottom: 10px;">
+    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 3px; color: #374151;" for="calc_t2">Temperature 2, T₂ (°C):</label>
+    <input type="number" id="calc_t2" step="any" placeholder="e.g. 100" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+  </div>
+
+  <div style="margin-bottom: 14px;">
+    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 3px; color: #374151;" for="calc_t3">Target Temperature, T₃ (°C):</label>
+    <input type="number" id="calc_t3" step="any" placeholder="e.g. 38" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+  </div>
+
+  <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+    <button onclick="runWaterMixCalc()" style="flex: 1; padding: 9px; background: #2563eb; color: #fff; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Calculate</button>
+    <button onclick="resetWaterMixCalc()" style="flex: 1; padding: 9px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: 4px; font-weight: 600; cursor: pointer;">Restart</button>
+  </div>
+
+  <div style="margin-bottom: 10px;">
+    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 3px; color: #374151;" for="calc_v1">Volume 1, V₁ (mL):</label>
+    <input type="text" id="calc_v1" readonly style="width: 100%; padding: 8px; background: #f9fafb; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box; font-weight: 600; color: #1f2937;">
+  </div>
+
+  <div style="margin-bottom: 10px;">
+    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 3px; color: #374151;" for="calc_v2">Volume 2, V₂ (mL):</label>
+    <input type="text" id="calc_v2" readonly style="width: 100%; padding: 8px; background: #f9fafb; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box; font-weight: 600; color: #1f2937;">
+  </div>
+
+  <div id="calc_error" style="color: #dc2626; font-size: 0.85rem; text-align: center; min-height: 1.2em;"></div>
+</div>
+
+<script>
+  function runWaterMixCalc() {
+    const t1 = parseFloat(document.getElementById('calc_t1').value);
+    const t2 = parseFloat(document.getElementById('calc_t2').value);
+    const t3 = parseFloat(document.getElementById('calc_t3').value);
+    const err = document.getElementById('calc_error');
+
+    err.textContent = '';
+    document.getElementById('calc_v1').value = '';
+    document.getElementById('calc_v2').value = '';
+
+    if ([t1, t2, t3].some(isNaN)) {
+      err.textContent = 'Please enter valid values for T₁, T₂, and T₃.';
+      return;
+    }
+    if (t1 === t2) {
+      err.textContent = 'T₁ and T₂ cannot be identical.';
+      return;
+    }
+
+    const minT = Math.min(t1, t2);
+    const maxT = Math.max(t1, t2);
+
+    if (t3 < minT || t3 > maxT) {
+      err.textContent = `T₃ must be between ${minT}°C and ${maxT}°C.`;
+      return;
+    }
+
+    const v1 = 1000 * (t2 - t3) / (t2 - t1);
+    const v2 = 1000 - v1;
+
+    document.getElementById('calc_v1').value = v1.toFixed(1) + ' mL';
+    document.getElementById('calc_v2').value = v2.toFixed(1) + ' mL';
+  }
+
+  function resetWaterMixCalc() {
+    document.getElementById('calc_t1').value = '';
+    document.getElementById('calc_t2').value = '';
+    document.getElementById('calc_t3').value = '';
+    document.getElementById('calc_v1').value = '';
+    document.getElementById('calc_v2').value = '';
+    document.getElementById('calc_error').textContent = '';
+  }
+</script>
+<!-- Water Mixing Calculator Embed End -->
